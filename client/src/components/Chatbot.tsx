@@ -22,6 +22,7 @@ export default function Chatbot() {
     { id: '1', text: "Hi! I'm an AI assistant. Feel free to ask me about services, projects, or how to contact.", isBot: true }
   ]);
   const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -30,30 +31,62 @@ export default function Chatbot() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, isOpen]);
+  }, [messages, isOpen, isLoading]);
 
-  const handleSend = () => {
-    if (!inputValue.trim()) return;
+  const handleSend = async () => {
+    if (!inputValue.trim() || isLoading) return;
 
     const userText = inputValue.trim();
     const newUserMsg: Message = { id: Date.now().toString(), text: userText, isBot: false };
     
     setMessages(prev => [...prev, newUserMsg]);
     setInputValue('');
+    setIsLoading(true);
 
-    setTimeout(() => {
-      const lowerInput = userText.toLowerCase();
-      let botReply = "I'm not sure about that. Try asking about my services, projects, or contact info!";
-      
-      for (const [key, value] of Object.entries(PREDEFINED_QA)) {
-        if (lowerInput.includes(key.replace('?', ''))) {
-          botReply = value;
-          break;
-        }
+    try {
+      // API Integration Placeholder
+      // To use a real API, replace 'YOUR_OPENAI_API_KEY' with your actual key
+      // and ensure you're calling this from a secure backend to protect your key.
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer YOUR_OPENAI_API_KEY`
+        },
+        body: JSON.stringify({
+          model: 'gpt-3.5-turbo',
+          messages: [{ role: 'user', content: userText }],
+          temperature: 0.7
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('API request failed');
       }
 
+      const data = await response.json();
+      const botReply = data.choices[0].message.content;
       setMessages(prev => [...prev, { id: Date.now().toString(), text: botReply, isBot: true }]);
-    }, 600);
+    } catch (error) {
+      console.error('Error calling OpenAI:', error);
+      
+      // Fallback to local logic if API fails or key is missing
+      setTimeout(() => {
+        const lowerInput = userText.toLowerCase();
+        let botReply = "I'm having trouble connecting to my brain right now. Try asking about my services, projects, or contact info!";
+        
+        for (const [key, value] of Object.entries(PREDEFINED_QA)) {
+          if (lowerInput.includes(key.replace('?', ''))) {
+            botReply = value;
+            break;
+          }
+        }
+
+        setMessages(prev => [...prev, { id: Date.now().toString(), text: botReply, isBot: true }]);
+      }, 600);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -110,6 +143,21 @@ export default function Chatbot() {
                   </div>
                 </motion.div>
               ))}
+              {isLoading && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex justify-start"
+                >
+                  <div className="bg-muted/80 text-foreground p-3.5 rounded-2xl rounded-tl-sm border border-border/50">
+                    <div className="flex gap-1">
+                      <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce"></span>
+                      <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                      <span className="w-1.5 h-1.5 bg-foreground/40 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
               <div ref={messagesEndRef} />
             </div>
 
@@ -127,7 +175,8 @@ export default function Chatbot() {
                 />
                 <button
                   onClick={handleSend}
-                  className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-all shadow-md shrink-0 active:scale-95"
+                  disabled={isLoading}
+                  className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-all shadow-md shrink-0 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                   data-testid="button-send-chat"
                 >
                   <Send size={16} className="ml-0.5" />
