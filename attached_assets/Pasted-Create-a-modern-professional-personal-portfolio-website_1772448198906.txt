@@ -1,0 +1,83 @@
+Create a modern, professional personal portfolio website for a web developer.
+
+Requirements:
+
+1. Tech Stack:
+- Use HTML, CSS, and JavaScript only.
+- Make it responsive (mobile friendly).
+- Clean, modern UI design.
+- Use smooth animations and professional fonts.
+
+2. Sections Required:
+
+A) Hero Section:
+- Name placeholder: "Your Name"
+- Title: "Full Stack Developer | AI Solutions Creator"
+- Short intro paragraph.
+- Two buttons:
+   - View Projects
+   - Contact Me
+
+B) About Me Section:
+- Short professional bio.
+- Skills list:
+   - Website Development
+   - Full Stack Applications
+   - AI Chatbot Development
+   - AI Powered Presentations
+   - Automation Tools
+
+C) Services Section:
+Create service cards with icons and short descriptions:
+   - Website Development
+   - Full Stack Web Applications
+   - AI Chatbot Integration
+   - AI Presentations for Business
+   - Custom Automation Solutions
+
+D) Projects Section:
+Create 3 project cards with:
+   - Project image placeholder
+   - Short description
+   - "View on GitHub" button
+   - "Live Demo" button
+
+E) Integrated Chatbot:
+Add a simple floating chatbot button at bottom right.
+When clicked, open a chat window.
+The chatbot should:
+   - Greet the user
+   - Answer predefined questions like:
+        "What services do you offer?"
+        "How can I contact you?"
+        "Show your projects"
+   - Use simple JavaScript logic (no external API).
+   - Smooth open/close animation.
+
+F) Contact Section:
+- Contact form with:
+   - Name
+   - Email
+   - Message
+- Social links placeholders (GitHub, LinkedIn, Email)
+
+G) Footer:
+- Simple professional footer with copyright text.
+
+3. Design Requirements:
+- Use gradient background.
+- Modern card design.
+- Hover effects on buttons.
+- Smooth scrolling.
+- Professional color theme (dark theme preferred).
+- Use Google Fonts.
+- Make UI look premium.
+
+4. Structure:
+- Separate files:
+   - index.html
+   - style.css
+   - script.js
+- Well commented code.
+
+Generate complete working code for all files.
